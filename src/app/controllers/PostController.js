@@ -4,14 +4,20 @@ class PostController {
 
     async index(request, response) {
 
-      const { data : posts } = await api.get('posts');
       const { data : users } = await api.get('users');
+      const { data : posts } = await api.get('posts');
 
-      const updatedPosts = posts.map(post => {
-        const user = users.find( user => post.userId === user.id)        
-        return {...post, user};
-      })
+      const usersInACompanyGroup =  users.filter( user => user.company.name.match('Group'));
+
+      const usersPost = posts.filter(post =>
+       usersInACompanyGroup.find( user => post.userId === user.id)           
+      )
       
+      const updatedPosts = usersPost.map(post => {
+        const user = usersInACompanyGroup.find( user => post.userId === user.id)        
+        return {...post, user};
+      });
+
       return response.status(200).json(updatedPosts);
 
     }
