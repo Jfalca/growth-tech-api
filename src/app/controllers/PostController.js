@@ -15,6 +15,19 @@ class PostController {
       return response.status(200).json(updatedPosts);
 
     }
+
+    async show(request, response) {
+
+      const { id } = request.params;
+      const { data : post } = await api.get(`posts/${id}`);
+      const { data : user } = await api.get(`users/${post.userId}`);
+
+      const updatedPost = {...post, user};
+      
+      return response.status(200).json(updatedPost);
+
+    }
+
   }
   
   export default new PostController();
